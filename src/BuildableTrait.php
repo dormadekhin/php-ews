@@ -71,8 +71,13 @@ trait BuildableTrait
 
                 if (count($parameters) === 1
                     && $parameters[0]->hasType()
-                    && $parameters[0]->getClass() !== null) {
-                    $classToBuild = $parameters[0]->getClass()->getName();
+                    && $parameters[0]->getType() !== null) {
+                    $type = $parameters[0]->getType();
+                    if ($type instanceof \ReflectionNamedType) {
+                        $classToBuild = $type->getName();
+                    } else {
+                        continue;
+                    }
 
                     $newValue = call_user_func("$classToBuild::buildFromArray", $value, true);
                     $object->{ucfirst($key)} = $newValue;
